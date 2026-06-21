@@ -4,6 +4,24 @@ const chatBox = document.getElementById("chat-box");
 
 let conversationHistory = [];
 
+const initialGreeting = `Halo bosku! 👋 Selamat datang di gerobak Abang Takoyaki.
+
+Abang punya 3 pilihan varian mantap nih:
+- **MIX** (campur aja biar rame)
+- **MOZA** (mozarella lumer)
+- **GURITA** (potongan gurita asli no debat)
+
+Buat porsinya bisa pilih isi 6, 8, 10, 12, atau yang paling gede isi 20 ya.
+Mau dibuatin varian apa dan berapa porsi nih? Sok atuh dipilih-pilih dulu!`;
+
+window.addEventListener('DOMContentLoaded', () => {
+  appendMessage("bot", initialGreeting);
+  conversationHistory.push({
+    role: "model",
+    parts: [{ text: initialGreeting }]
+  });
+});
+
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -28,7 +46,6 @@ form.addEventListener("submit", function (e) {
   })
     .then((res) => res.json())
     .then((data) => {
-      // Delay buatan acak antara 1 detik hingga 3 detik (1000ms - 3000ms)
       const typingDelay = Math.floor(Math.random() * 2000) + 1000;
       
       setTimeout(() => {
@@ -73,10 +90,17 @@ function appendMessage(sender, text, id = null) {
   }
   
   const textEl = document.createElement("div");
-  textEl.textContent = text;
+  
+  let safeText = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+    
+  safeText = safeText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  textEl.innerHTML = safeText;
   msg.appendChild(textEl);
 
-  // Tambahkan jam pengiriman
   const timeEl = document.createElement("div");
   timeEl.classList.add("message-time");
   const now = new Date();
@@ -84,7 +108,6 @@ function appendMessage(sender, text, id = null) {
   const minutes = now.getMinutes().toString().padStart(2, '0');
   timeEl.textContent = `${hours}:${minutes}`;
   
-  // Jangan tampilkan jam jika sedang loading
   if (text !== "...") {
     msg.appendChild(timeEl);
   }
