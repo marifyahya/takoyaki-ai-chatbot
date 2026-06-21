@@ -69,29 +69,25 @@ form.addEventListener("submit", function (e) {
     })
       .then((res) => res.json())
       .then((data) => {
-        const typingDelay = Math.floor(Math.random() * 2000) + 1000;
+        const loadingEl = document.getElementById("loading-indicator");
+        if (loadingEl) loadingEl.remove();
 
-        setTimeout(() => {
-          const loadingEl = document.getElementById("loading-indicator");
-          if (loadingEl) loadingEl.remove();
-
-          if (data.reply) {
-            conversationHistory.push({
-              role: "model",
-              parts: [{ text: data.reply }],
-            });
-            appendMessage("bot", data.reply);
-          } else if (data.error) {
-            conversationHistory.pop();
-            appendMessage("bot", "Waduh error nih: " + data.error);
-          } else {
-            conversationHistory.pop();
-            appendMessage(
-              "bot",
-              "Pusing pala barbie, nggak ngerti lu ngomong apa.",
-            );
-          }
-        }, typingDelay);
+        if (data.reply) {
+          conversationHistory.push({
+            role: "model",
+            parts: [{ text: data.reply }],
+          });
+          appendMessage("bot", data.reply);
+        } else if (data.error) {
+          conversationHistory.pop();
+          appendMessage("bot", "Waduh error nih: " + data.error);
+        } else {
+          conversationHistory.pop();
+          appendMessage(
+            "bot",
+            "Pusing pala barbie, nggak ngerti lu ngomong apa.",
+          );
+        }
       })
       .catch((err) => {
         console.error(err);
