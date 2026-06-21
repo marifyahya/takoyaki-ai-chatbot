@@ -16,11 +16,11 @@ Abang punya 3 pilihan varian mantap nih:
 Buat porsinya bisa pilih isi 6, 8, 10, 12, atau yang paling gede isi 20 ya.
 Mau dibuatin varian apa dan berapa porsi nih? Sok atuh dipilih-pilih dulu!`;
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   appendMessage("bot", initialGreeting);
   conversationHistory.push({
     role: "model",
-    parts: [{ text: initialGreeting }]
+    parts: [{ text: initialGreeting }],
   });
 });
 
@@ -70,7 +70,7 @@ form.addEventListener("submit", function (e) {
       .then((res) => res.json())
       .then((data) => {
         const typingDelay = Math.floor(Math.random() * 2000) + 1000;
-        
+
         setTimeout(() => {
           const loadingEl = document.getElementById("loading-indicator");
           if (loadingEl) loadingEl.remove();
@@ -112,26 +112,26 @@ function appendMessage(sender, text, id = null) {
   if (id) {
     msg.id = id;
   }
-  
+
   const textEl = document.createElement("div");
-  
+
   let safeText = text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-    
-  safeText = safeText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
+
+  safeText = safeText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
   textEl.innerHTML = safeText;
   msg.appendChild(textEl);
 
   const timeEl = document.createElement("div");
   timeEl.classList.add("message-time");
   const now = new Date();
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
   timeEl.textContent = `${hours}:${minutes}`;
-  
+
   if (text !== "...") {
     msg.appendChild(timeEl);
   }
@@ -147,8 +147,8 @@ function appendTypingIndicator(id) {
 
   const typingAnimation = document.createElement("div");
   typingAnimation.classList.add("typing-animation");
-  typingAnimation.innerHTML = '<span></span><span></span><span></span>';
-  
+  typingAnimation.innerHTML = "<span></span><span></span><span></span>";
+
   msgWrapper.appendChild(typingAnimation);
   chatBox.appendChild(msgWrapper);
   chatBox.scrollTop = chatBox.scrollHeight;
