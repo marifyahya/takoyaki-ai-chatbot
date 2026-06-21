@@ -3,6 +3,8 @@ const input = document.getElementById("user-input");
 const chatBox = document.getElementById("chat-box");
 
 let conversationHistory = [];
+let debounceTimer = null;
+let pendingUserMessages = [];
 
 const initialGreeting = `Halo bosku! 👋 Selamat datang di gerobak Abang Takoyaki.
 
@@ -28,58 +30,80 @@ form.addEventListener("submit", function (e) {
   const userMessage = input.value.trim();
   if (!userMessage) return;
 
+  // 1. Tampilkan pesan user di layar (langsung)
   appendMessage("user", userMessage);
   input.value = "";
 
-  conversationHistory.push({
-    role: "user",
-    parts: [{ text: userMessage }],
-  });
+  // 2. Simpan pesan ke antrean
+  pendingUserMessages.push(userMessage);
 
-  const loadingMsgId = "loading-" + Date.now();
-  appendTypingIndicator(loadingMsgId);
+  // 3. Batalkan pengiriman sebelumnya jika user mengetik lagi dengan cepat
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
 
-  fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ history: conversationHistory }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      const typingDelay = Math.floor(Math.random() * 2000) + 1000;
-      
-      setTimeout(() => {
-        const loadingEl = document.getElementById(loadingMsgId);
-        if (loadingEl) loadingEl.remove();
+  // Hapus indikator loading lama jika ada
+  const oldLoading = document.getElementById("loading-indicator");
+  if (oldLoading) oldLoading.remove();
 
-        if (data.reply) {
-          conversationHistory.push({
-            role: "model",
-            parts: [{ text: data.reply }],
-          });
-          appendMessage("bot", data.reply);
-        } else if (data.error) {
-          conversationHistory.pop();
-          appendMessage("bot", "Waduh error nih: " + data.error);
-        } else {
-          conversationHistory.pop();
-          appendMessage(
-            "bot",
-            "Pusing pala barbie, nggak ngerti lu ngomong apa.",
-          );
-        }
-      }, typingDelay);
-    })
-    .catch((err) => {
-      console.error(err);
-      conversationHistory.pop();
-      const loadingEl = document.getElementById(loadingMsgId);
-      if (loadingEl) loadingEl.remove();
-      appendMessage(
-        "bot",
-        "Servernya lagi ngambek (error). Pastiin backend nyala!",
-      );
+  // Tampilkan indikator loading baru
+  appendTypingIndicator("loading-indicator");
+
+  // 4. Tunggu 1.5 detik setelah pesan terakhir sebelum memanggil API
+  debounceTimer = setTimeout(() => {
+    // Gabungkan semua pesan yang tertunda menjadi satu
+    const combinedMessage = pendingUserMessages.join("\\n");
+    pendingUserMessages = []; // Reset antrean
+
+    // Masukkan ke history sebagai satu kesatuan pesan user
+    conversationHistory.push({
+      role: "user",
+      parts: [{ text: combinedMessage }],
     });
+
+    // Panggil API
+    fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: conversationHistory }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const typingDelay = Math.floor(Math.random() * 2000) + 1000;
+        
+        setTimeout(() => {
+          const loadingEl = document.getElementById("loading-indicator");
+          if (loadingEl) loadingEl.remove();
+
+          if (data.reply) {
+            conversationHistory.push({
+              role: "model",
+              parts: [{ text: data.reply }],
+            });
+            appendMessage("bot", data.reply);
+          } else if (data.error) {
+            conversationHistory.pop();
+            appendMessage("bot", "Waduh error nih: " + data.error);
+          } else {
+            conversationHistory.pop();
+            appendMessage(
+              "bot",
+              "Pusing pala barbie, nggak ngerti lu ngomong apa.",
+            );
+          }
+        }, typingDelay);
+      })
+      .catch((err) => {
+        console.error(err);
+        conversationHistory.pop();
+        const loadingEl = document.getElementById("loading-indicator");
+        if (loadingEl) loadingEl.remove();
+        appendMessage(
+          "bot",
+          "Servernya lagi ngambek (error). Pastiin backend nyala!",
+        );
+      });
+  }, 1500); // Tunggu 1.5 detik (1500ms)
 });
 
 function appendMessage(sender, text, id = null) {
