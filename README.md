@@ -1,6 +1,9 @@
 # Asisten Penjualan AI (Takoyaki) 🐙
 
-Repositori ini berisi kode sumber untuk aplikasi Chatbot AI *Full-Stack* yang dirancang sebagai asisten penjualan virtual. Aplikasi ini memanfaatkan Google Gemini API untuk memproses bahasa alami, menangani interaksi pelanggan, dan mengikuti alur penjualan yang telah ditentukan.
+Repositori ini berisi kode sumber untuk aplikasi Chatbot AI yang dirancang sebagai asisten penjualan virtual. Aplikasi ini memanfaatkan Google Gemini API untuk memproses bahasa alami, menangani interaksi pelanggan, dan mengikuti alur penjualan yang telah ditentukan.
+
+> **Final Project Submission**
+> This repository is submitted as a Final Project for the **"AI Productivity and AI API Integration for Developers"** course, organized by **Hacktiv8**.
 
 ## Deskripsi
 
