@@ -30,38 +30,29 @@ form.addEventListener("submit", function (e) {
   const userMessage = input.value.trim();
   if (!userMessage) return;
 
-  // 1. Tampilkan pesan user di layar (langsung)
   appendMessage("user", userMessage);
   input.value = "";
 
-  // 2. Simpan pesan ke antrean
   pendingUserMessages.push(userMessage);
 
-  // 3. Batalkan pengiriman sebelumnya jika user mengetik lagi dengan cepat
   if (debounceTimer) {
     clearTimeout(debounceTimer);
   }
 
-  // Hapus indikator loading lama jika ada
   const oldLoading = document.getElementById("loading-indicator");
   if (oldLoading) oldLoading.remove();
 
-  // Tampilkan indikator loading baru
   appendTypingIndicator("loading-indicator");
 
-  // 4. Tunggu 1.5 detik setelah pesan terakhir sebelum memanggil API
   debounceTimer = setTimeout(() => {
-    // Gabungkan semua pesan yang tertunda menjadi satu
     const combinedMessage = pendingUserMessages.join("\\n");
-    pendingUserMessages = []; // Reset antrean
+    pendingUserMessages = [];
 
-    // Masukkan ke history sebagai satu kesatuan pesan user
     conversationHistory.push({
       role: "user",
       parts: [{ text: combinedMessage }],
     });
 
-    // Panggil API
     fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

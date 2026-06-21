@@ -1,6 +1,6 @@
-# Asisten Penjualan AI (Takoyaki) 🐙
+# Abang Takoyaki (Asisten Penjualan AI) 🐙
 
-Repositori ini berisi kode sumber untuk aplikasi Chatbot AI yang dirancang sebagai asisten penjualan virtual. Aplikasi ini memanfaatkan Google Gemini API untuk memproses bahasa alami, menangani interaksi pelanggan, dan mengikuti alur penjualan yang telah ditentukan.
+Repositori ini berisi aplikasi Chatbot AI yang dirancang sebagai asisten penjualan virtual. Aplikasi ini memanfaatkan Google Gemini API untuk memproses bahasa alami, menangani interaksi pelanggan, dan mengikuti alur penjualan yang telah ditentukan.
 
 > **Final Project Submission**
 > This repository is submitted as a Final Project for the **"AI Productivity and AI API Integration for Developers"** course, organized by **Hacktiv8**.
@@ -8,6 +8,8 @@ Repositori ini berisi kode sumber untuk aplikasi Chatbot AI yang dirancang sebag
 ## Deskripsi
 
 Aplikasi ini bertindak sebagai agen layanan pelanggan untuk toko Takoyaki. Chatbot ini dilengkapi dengan fitur percakapan yang mengerti konteks (*context-aware*) dengan mempertahankan riwayat obrolan, sehingga interaksi berjalan secara natural. Sistem *backend* secara ketat menerapkan instruksi sistem khusus (*system instruction*), seperti menetapkan daftar harga menu, mencegah tawar-menawar, dan mewajibkan pelanggan memberikan alamat pengiriman sebelum memproses pesanan.
+
+![Demo Aplikasi Abang Takoyaki](demo.png)
 
 ## Teknologi yang Digunakan
 
